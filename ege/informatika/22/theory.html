@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ЕГЭ информатика 2026 — задание 22: вся теория, примеры, триггеры, лайфхаки</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111c33;
+      --panel2:#17243f;
+      --text:#eef4ff;
+      --muted:#b8c5da;
+      --accent:#7dd3fc;
+      --accent2:#a7f3d0;
+      --warn:#fde68a;
+      --danger:#fecaca;
+      --ok:#bbf7d0;
+      --line:rgba(255,255,255,.12);
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+      --radius:22px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(125,211,252,.18), transparent 32%),
+        radial-gradient(circle at 88% 8%, rgba(167,243,208,.12), transparent 28%),
+        linear-gradient(180deg, #0b1020 0%, var(--bg) 45%, #0b1020 100%);
+      line-height:1.65;
+    }
+    a{color:var(--accent)}
+    .wrap{max-width:1180px;margin:0 auto;padding:28px 18px 72px}
+    .hero{
+      padding:42px 28px;
+      border:1px solid var(--line);
+      border-radius:calc(var(--radius) + 10px);
+      background:linear-gradient(135deg, rgba(17,28,51,.95), rgba(23,36,63,.82));
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .hero:after{
+      content:"22";
+      position:absolute;
+      right:32px;
+      bottom:-34px;
+      font-size:180px;
+      line-height:1;
+      font-weight:900;
+      color:rgba(255,255,255,.045);
+    }
+    .eyebrow{
+      display:inline-flex;gap:8px;align-items:center;
+      padding:6px 12px;border:1px solid rgba(125,211,252,.35);
+      color:#dff7ff;border-radius:999px;background:rgba(125,211,252,.10);
+      font-size:14px;font-weight:700;
+    }
+    h1{font-size:clamp(32px, 5vw, 58px);line-height:1.05;margin:18px 0 14px;letter-spacing:-.04em}
+    h2{font-size:clamp(25px, 3vw, 36px);line-height:1.18;margin:46px 0 16px;letter-spacing:-.03em}
+    h3{font-size:22px;line-height:1.25;margin:26px 0 10px}
+    h4{font-size:18px;margin:18px 0 8px;color:#e7f7ff}
+    p{margin:10px 0;color:var(--muted)}
+    .lead{font-size:19px;max-width:850px;color:#d7e6fb}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+    .card{
+      grid-column:span 12;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:linear-gradient(180deg, rgba(23,36,63,.92), rgba(17,28,51,.86));
+      box-shadow:0 10px 30px rgba(0,0,0,.16);
+      padding:20px;
+    }
+    @media (min-width:760px){
+      .span-4{grid-column:span 4}.span-5{grid-column:span 5}.span-6{grid-column:span 6}.span-7{grid-column:span 7}.span-8{grid-column:span 8}
+    }
+    .toc{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+    .toc a{
+      text-decoration:none;color:#eaf6ff;border:1px solid var(--line);
+      background:rgba(255,255,255,.055);border-radius:999px;padding:9px 13px;font-size:14px;
+    }
+    .toc a:hover{border-color:rgba(125,211,252,.65);background:rgba(125,211,252,.11)}
+    .tag{display:inline-block;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:800;letter-spacing:.02em;text-transform:uppercase}
+    .tag.ok{background:rgba(187,247,208,.14);color:var(--ok);border:1px solid rgba(187,247,208,.28)}
+    .tag.warn{background:rgba(253,230,138,.12);color:var(--warn);border:1px solid rgba(253,230,138,.28)}
+    .tag.danger{background:rgba(254,202,202,.12);color:var(--danger);border:1px solid rgba(254,202,202,.28)}
+    .tag.info{background:rgba(125,211,252,.12);color:var(--accent);border:1px solid rgba(125,211,252,.28)}
+    .formula{
+      position:relative;margin:12px 0;padding:14px 48px 14px 14px;
+      border:1px solid rgba(125,211,252,.22);border-radius:16px;
+      background:#071021;color:#dff7ff;font-family:var(--mono);font-size:14px;overflow:auto;
+    }
+    .formula button{
+      position:absolute;right:9px;top:9px;border:0;border-radius:10px;
+      padding:6px 8px;background:rgba(125,211,252,.16);color:#dff7ff;cursor:pointer;font-size:12px;
+    }
+    .formula button:hover{background:rgba(125,211,252,.28)}
+    table{width:100%;border-collapse:separate;border-spacing:0;margin:14px 0;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+    th,td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+    th{background:rgba(125,211,252,.12);color:#eef9ff;font-size:14px}
+    tr:last-child td{border-bottom:0}
+    td{color:#d7e2f2}
+    .note,.mistake,.exam,.hack{
+      border-radius:18px;padding:14px 16px;margin:14px 0;border:1px solid var(--line);
+      background:rgba(255,255,255,.055);
+    }
+    .note{border-color:rgba(125,211,252,.28);background:rgba(125,211,252,.08)}
+    .hack{border-color:rgba(167,243,208,.28);background:rgba(167,243,208,.07)}
+    .exam{border-color:rgba(253,230,138,.28);background:rgba(253,230,138,.075)}
+    .mistake{border-color:rgba(254,202,202,.28);background:rgba(254,202,202,.075)}
+    .note b,.hack b,.exam b,.mistake b{color:#fff}
+    .steps{counter-reset:step;display:grid;gap:12px;margin:14px 0}
+    .step{position:relative;padding:14px 16px 14px 54px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.045)}
+    .step:before{counter-increment:step;content:counter(step);position:absolute;left:14px;top:14px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(125,211,252,.18);color:#e4f8ff;font-weight:900}
+    code,kbd{font-family:var(--mono);background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.11);padding:2px 6px;border-radius:8px;color:#eff8ff}
+    ul,ol{color:var(--muted);padding-left:22px}
+    li{margin:7px 0}
+    details{border:1px solid var(--line);border-radius:18px;padding:12px 14px;background:rgba(255,255,255,.045);margin:12px 0}
+    summary{cursor:pointer;font-weight:800;color:#f4fbff}
+    .mini{font-size:13px;color:#aebdd2}
+    .two-col{columns:1}
+    @media (min-width:900px){.two-col{columns:2;column-gap:34px}.two-col > *{break-inside:avoid}}
+    .footer{margin-top:48px;padding-top:22px;border-top:1px solid var(--line);color:#98a8be;font-size:14px}
+    .printbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+    .btn{border:1px solid var(--line);border-radius:14px;padding:10px 14px;background:rgba(255,255,255,.07);color:#fff;cursor:pointer;font-weight:800}
+    .btn:hover{background:rgba(125,211,252,.13);border-color:rgba(125,211,252,.45)}
+    @media print{
+      body{background:#fff;color:#111}.wrap{max-width:none;padding:0}.hero,.card,details,.note,.hack,.exam,.mistake{box-shadow:none;background:#fff;color:#111;border-color:#ddd}
+      p,td,li,.lead,.mini{color:#222}.formula{background:#f5f5f5;color:#111;border-color:#ddd;white-space:pre-wrap}.formula button,.printbar,.toc{display:none}
+      h1,h2,h3,h4,th{color:#111}.tag{border-color:#ddd;color:#111;background:#f5f5f5}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <span class="eyebrow">ЕГЭ информатика 2026 · задание №22 · параллельные процессы</span>
+      <h1>Вся теория по 22 заданию: процессы, зависимости, Excel/LibreOffice, триггеры и лайфхаки</h1>
+      <p class="lead">Один HTML-конспект для подготовки: что означает условие, какие формулы писать, как не запутаться в миллисекундах, как решать через Calc/Excel и как распознавать тип задачи за 10 секунд.</p>
+      <div class="printbar">
+        <button class="btn" onclick="window.print()">Распечатать / сохранить в PDF</button>
+        <button class="btn" onclick="document.querySelectorAll('details').forEach(d=>d.open=true)">Раскрыть всё</button>
+        <button class="btn" onclick="document.querySelectorAll('details').forEach(d=>d.open=false)">Свернуть всё</button>
+      </div>
+      <nav class="toc" aria-label="Оглавление">
+        <a href="#idea">Суть задания</a>
+        <a href="#core">Главные формулы</a>
+        <a href="#spreadsheet">Excel/Calc</a>
+        <a href="#types">Типы вопросов</a>
+        <a href="#triggers">Триггеры</a>
+        <a href="#examples">Примеры</a>
+        <a href="#lifehacks">Лайфхаки</a>
+        <a href="#mistakes">Ошибки</a>
+        <a href="#checklist">Чек-лист</a>
+      </nav>
+    </section>
+
+    <section id="idea">
+      <h2>1. Что вообще проверяет задание 22</h2>
+      <div class="grid">
+        <article class="card span-7">
+          <h3>Модель задачи</h3>
+          <p>Есть несколько вычислительных процессов. У каждого процесса обычно даны:</p>
+          <ul>
+            <li><b>ID</b> — идентификатор процесса;</li>
+            <li><b>длительность</b> — сколько миллисекунд он выполняется;</li>
+            <li><b>зависимости</b> — ID процессов, результаты которых нужны для запуска текущего процесса.</li>
+          </ul>
+          <p>Если в зависимостях стоит <code>0</code>, процесс независимый: он может стартовать с момента времени <code>0</code>, если в условии не сказано иначе.</p>
+          <div class="note"><b>Главная идея:</b> зависимый процесс ждёт завершения всех процессов-предков. Если предков несколько, важен не первый завершившийся, а самый поздний из них.</div>
+        </article>
+        <article class="card span-5">
+          <h3>Что важно для 2026</h3>
+          <p>Файл к заданию 22 в ЕГЭ-2026 обычно даётся как таблица <code>.ods</code>. Поэтому основной рабочий инструмент — <b>LibreOffice Calc</b> или Excel, если файл корректно открывается.</p>
+          <div class="exam"><b>Экзаменационный смысл:</b> это не задача на красивое программирование. Это задача на аккуратную модель, таблицы, формулы и внимательное чтение условия.</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="core">
+      <h2>2. Базовая теория и главные формулы</h2>
+      <div class="grid">
+        <article class="card span-6">
+          <h3>Время начала и окончания</h3>
+          <p>Для каждого процесса удобно считать два числа:</p>
+          <ul>
+            <li><code>Start</code> — момент начала процесса;</li>
+            <li><code>End</code> — момент окончания процесса.</li>
+          </ul>
+          <div class="formula" data-copy="Start = max(End всех зависимостей)
+End = Start + Duration">Start = max(End всех зависимостей)
+End = Start + Duration</div>
+          <p>Для независимого процесса:</p>
+          <div class="formula" data-copy="Start = 0
+End = Duration">Start = 0
+End = Duration</div>
+        </article>
+        <article class="card span-6">
+          <h3>Если есть задержка</h3>
+          <p>Иногда в условии пишут: «процесс может начаться не раньше, чем через <b>X мс</b> после завершения входящего процесса».</p>
+          <div class="formula" data-copy="Start = max(End зависимостей) + X
+End = Start + Duration">Start = max(End зависимостей) + X
+End = Start + Duration</div>
+          <div class="mistake"><b>Ловушка:</b> задержку добавляют зависимым процессам. Независимые процессы не ждут эту задержку, если в условии отдельно не сказано обратное.</div>
+        </article>
+      </div>
+
+      <article class="card">
+        <h3>Почему берём максимум, а не сумму</h3>
+        <p>Если процесс зависит от процессов 1 и 2, он не выполняет их заново и не ждёт их по очереди. Они могли идти параллельно. Он просто ждёт, пока закончится <b>последний</b> из нужных процессов.</p>
+        <table>
+          <thead><tr><th>Процесс</th><th>Длительность</th><th>Зависит от</th><th>Start</th><th>End</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>4</td><td>0</td><td>0</td><td>4</td></tr>
+            <tr><td>2</td><td>3</td><td>0</td><td>0</td><td>3</td></tr>
+            <tr><td>3</td><td>1</td><td>1; 2</td><td>max(4, 3) = 4</td><td>5</td></tr>
+            <tr><td>4</td><td>7</td><td>3</td><td>5</td><td>12</td></tr>
+          </tbody>
+        </table>
+        <div class="note"><b>Ответ на «минимальное время выполнения всех процессов»:</b> максимальное значение в столбце <code>End</code>. В примере это <code>12</code>.</div>
+      </article>
+    </section>
+
+    <section id="spreadsheet">
+      <h2>3. Как решать в Excel / LibreOffice Calc</h2>
+      <article class="card">
+        <h3>Стандартная раскладка столбцов</h3>
+        <p>Удобная структура после разбиения зависимостей:</p>
+        <table>
+          <thead><tr><th>Столбец</th><th>Что хранить</th><th>Пример</th></tr></thead>
+          <tbody>
+            <tr><td>A</td><td>ID процесса</td><td>1, 2, 3...</td></tr>
+            <tr><td>B</td><td>Длительность</td><td>4, 12, 7...</td></tr>
+            <tr><td>C</td><td>Исходная строка зависимостей</td><td>1; 2; 8 или 0</td></tr>
+            <tr><td>D:F</td><td>Разбитые зависимости</td><td>D = 1, E = 2, F = 8</td></tr>
+            <tr><td>G</td><td>Start — время начала</td><td>0, 4, 15...</td></tr>
+            <tr><td>H</td><td>End — время окончания</td><td>4, 12, 22...</td></tr>
+          </tbody>
+        </table>
+        <div class="steps">
+          <div class="step"><b>Открой файл .ods.</b> Не переписывай таблицу руками, работай с готовыми данными.</div>
+          <div class="step"><b>Разбей зависимости.</b> Выдели столбец зависимостей → <code>Данные</code> → <code>Текст по столбцам</code> → разделитель <code>;</code>.</div>
+          <div class="step"><b>Пустые ячейки в зависимостях замени на 0.</b> Делай это только в столбцах зависимостей, не во всей таблице.</div>
+          <div class="step"><b>Добавь столбцы Start и End.</b> Считай начало через максимум окончаний зависимостей, окончание — как начало + длительность.</div>
+          <div class="step"><b>Смотри вопрос.</b> Не всегда ответ — максимум End. Иногда спрашивают количество процессов, интервал, момент времени или параметр.</div>
+        </div>
+      </article>
+
+      <div class="grid">
+        <article class="card span-6">
+          <h3>Формулы без задержки</h3>
+          <p>Пусть ID в <code>A</code>, длительность в <code>B</code>, зависимости в <code>D:F</code>, Start в <code>G</code>, End в <code>H</code>.</p>
+          <p>Формула для <code>G2</code>:</p>
+          <div class="formula" data-copy="=МАКС(ЕСЛИОШИБКА(ВПР(D2;$A$2:$H$200;8;0);0);ЕСЛИОШИБКА(ВПР(E2;$A$2:$H$200;8;0);0);ЕСЛИОШИБКА(ВПР(F2;$A$2:$H$200;8;0);0))">=МАКС(ЕСЛИОШИБКА(ВПР(D2;$A$2:$H$200;8;0);0);ЕСЛИОШИБКА(ВПР(E2;$A$2:$H$200;8;0);0);ЕСЛИОШИБКА(ВПР(F2;$A$2:$H$200;8;0);0))</div>
+          <p>Формула для <code>H2</code>:</p>
+          <div class="formula" data-copy="=G2+B2">=G2+B2</div>
+          <p>Протяни обе формулы вниз.</p>
+        </article>
+
+        <article class="card span-6">
+          <h3>Формулы с задержкой X мс</h3>
+          <p>Если задержка записана в ячейке <code>K1</code>, а у независимого процесса в <code>D2</code> стоит <code>0</code>:</p>
+          <div class="formula" data-copy="=ЕСЛИ(D2=0;0;МАКС(ЕСЛИОШИБКА(ВПР(D2;$A$2:$H$200;8;0);0);ЕСЛИОШИБКА(ВПР(E2;$A$2:$H$200;8;0);0);ЕСЛИОШИБКА(ВПР(F2;$A$2:$H$200;8;0);0))+$K$1)">=ЕСЛИ(D2=0;0;МАКС(ЕСЛИОШИБКА(ВПР(D2;$A$2:$H$200;8;0);0);ЕСЛИОШИБКА(ВПР(E2;$A$2:$H$200;8;0);0);ЕСЛИОШИБКА(ВПР(F2;$A$2:$H$200;8;0);0))+$K$1)</div>
+          <p>Окончание такое же:</p>
+          <div class="formula" data-copy="=G2+B2">=G2+B2</div>
+        </article>
+      </div>
+
+      <article class="card">
+        <h3>Супер-лайфхак: строка ID = 0</h3>
+        <p>Чтобы не ловить ошибки <code>#Н/Д</code>, можно добавить техническую строку:</p>
+        <table>
+          <thead><tr><th>ID</th><th>Длительность</th><th>Зависимости</th><th>Start</th><th>End</th></tr></thead>
+          <tbody><tr><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr></tbody>
+        </table>
+        <p>Тогда <code>ВПР(0;...)</code> вернёт <code>0</code>, и формулы становятся спокойнее. Но следи, чтобы диапазон ВПР начинался с этой строки.</p>
+      </article>
+    </section>
+
+    <section id="types">
+      <h2>4. Типы вопросов и что именно считать</h2>
+      <div class="grid">
+        <article class="card span-6">
+          <h3>Тип 1. Минимальное время выполнения всех процессов</h3>
+          <p>Считаешь <code>End</code> для всех процессов. Ответ — максимум.</p>
+          <div class="formula" data-copy="Ответ = МАКС(столбец End)">Ответ = МАКС(столбец End)</div>
+          <div class="exam"><b>Триггер:</b> «Определите минимальное время, через которое завершится выполнение всей совокупности процессов».</div>
+        </article>
+
+        <article class="card span-6">
+          <h3>Тип 2. Сколько процессов завершится за первые T мс</h3>
+          <p>Процесс завершился за первые <code>T</code> мс, если его <code>End ≤ T</code>.</p>
+          <div class="formula" data-copy="=H2<=T">=H2&lt;=T</div>
+          <p>Потом фильтр по <code>ИСТИНА</code> или подсчёт.</p>
+          <div class="exam"><b>Триггер:</b> «какое наибольшее количество процессов может быть завершено за первые 200 мс».</div>
+        </article>
+
+        <article class="card span-6">
+          <h3>Тип 3. Сколько процессов выполняется в N-ю миллисекунду</h3>
+          <p><b>N-я миллисекунда</b> — это промежуток от <code>N−1</code> до <code>N</code>. Например, 15-я мс — от 14 до 15.</p>
+          <p>Процесс активен на N-й мс, если:</p>
+          <div class="formula" data-copy="Start < N
+End >= N">Start &lt; N
+End &gt;= N</div>
+          <p>В таблице:</p>
+          <div class="formula" data-copy="=И(G2<15;H2>=15)">=И(G2&lt;15;H2&gt;=15)</div>
+          <div class="mistake"><b>Ловушка:</b> не писать <code>Start ≤ N</code>. Процесс, который стартует ровно в 15, не выполнялся в течение 15-й мс, он начался после неё.</div>
+        </article>
+
+        <article class="card span-6">
+          <h3>Тип 4. Максимальное число одновременно выполняющихся процессов</h3>
+          <p>Строишь временную шкалу: 1, 2, 3, ..., максимум <code>End</code>. Для каждого момента считаешь, сколько процессов активны.</p>
+          <div class="formula" data-copy="=ЕСЛИ(И($G2<J$1;$H2>=J$1);1;0)">=ЕСЛИ(И($G2&lt;J$1;$H2&gt;=J$1);1;0)</div>
+          <p>Внизу каждого столбца:</p>
+          <div class="formula" data-copy="=СУММ(J2:J200)">=СУММ(J2:J200)</div>
+          <p>Ответ — максимум по строке сумм.</p>
+        </article>
+
+        <article class="card span-6">
+          <h3>Тип 5. Максимальная длина отрезка, когда работают ≥ K процессов</h3>
+          <p>Сначала считаешь количество активных процессов в каждый момент. Потом считаешь длину непрерывной серии.</p>
+          <div class="formula" data-copy="=ЕСЛИ(J$201>=$K$1;I202+1;0)">=ЕСЛИ(J$201&gt;=$K$1;I202+1;0)</div>
+          <p>Где <code>J$201</code> — количество активных процессов в текущую миллисекунду, <code>$K$1</code> — нужный порог.</p>
+          <div class="exam"><b>Триггер:</b> «максимальная продолжительность отрезка времени, в течение которого одновременно выполнялось не менее K процессов».</div>
+        </article>
+
+        <article class="card span-6">
+          <h3>Тип 6. Неизвестная длительность t</h3>
+          <p>В ячейку с <code>t</code> временно ставишь число. Таблица пересчитывается. Подбираешь максимальное <code>t</code>, при котором условие выполняется.</p>
+          <div class="formula" data-copy="Общее время = МАКС(End)
+Нужно: Общее время <= лимит">Общее время = МАКС(End)
+Нужно: Общее время &lt;= лимит</div>
+          <div class="hack"><b>Лайфхак:</b> можно использовать «Данные → Анализ “что если” → Подбор параметра», но на ЕГЭ часто быстрее подобрать руками: 1 → 10 → 20 → середина → проверить t и t+1.</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="triggers">
+      <h2>5. Триггеры в условии: как понять, что делать</h2>
+      <article class="card">
+        <table>
+          <thead><tr><th>Фраза в условии</th><th>Что означает</th><th>Что делать</th></tr></thead>
+          <tbody>
+            <tr><td>«может начать выполнение сразу после завершения»</td><td>Задержки нет</td><td><code>Start = max(End зависимостей)</code></td></tr>
+            <tr><td>«не раньше, чем через X мс после завершения»</td><td>Есть пауза</td><td>Для зависимых: <code>Start = max(End) + X</code></td></tr>
+            <tr><td>«количество одновременно выполняемых процессов может быть любым»</td><td>Нет ограничения на процессоры</td><td>Не строить очередь, все готовые запускаются параллельно</td></tr>
+            <tr><td>«длительность не зависит от других параллельно выполняемых процессов»</td><td>Параллельность не замедляет процессы</td><td>Не делить время, не добавлять коэффициенты</td></tr>
+            <tr><td>«минимальное время выполнения всей совокупности»</td><td>Нужен конец последнего процесса</td><td><code>МАКС(End)</code></td></tr>
+            <tr><td>«в течение N-й миллисекунды»</td><td>Нужны процессы, активные на отрезке <code>[N−1; N]</code></td><td><code>Start &lt; N</code> и <code>End ≥ N</code></td></tr>
+            <tr><td>«за первые T мс»</td><td>Обычно речь о завершении до момента T</td><td><code>End ≤ T</code></td></tr>
+            <tr><td>«не более M мс» + неизвестное <code>t</code></td><td>Нужно максимальное допустимое значение параметра</td><td>Подбор параметра, обязательно проверить <code>t+1</code></td></tr>
+            <tr><td>«независимые процессы можно запускать в любой момент» + «максимизировать отрезок»</td><td>Возможен тип со сдвигами процессов</td><td>Нужна оптимизация: Solver/Поиск решения или аккуратный перебор</td></tr>
+          </tbody>
+        </table>
+      </article>
+    </section>
+
+    <section id="examples">
+      <h2>6. Примеры решений</h2>
+      <div class="grid">
+        <article class="card span-6">
+          <h3>Пример A. Минимальное время выполнения</h3>
+          <table>
+            <thead><tr><th>ID</th><th>Длит.</th><th>Зависит</th><th>Start</th><th>End</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>4</td><td>0</td><td>0</td><td>4</td></tr>
+              <tr><td>2</td><td>3</td><td>0</td><td>0</td><td>3</td></tr>
+              <tr><td>3</td><td>1</td><td>1;2</td><td>4</td><td>5</td></tr>
+              <tr><td>4</td><td>7</td><td>3</td><td>5</td><td>12</td></tr>
+            </tbody>
+          </table>
+          <p><b>Ответ:</b> <code>max(4,3,5,12)=12</code>.</p>
+        </article>
+
+        <article class="card span-6">
+          <h3>Пример B. Задержка 7 мс</h3>
+          <p>Пусть процесс 3 зависит от 1 и 2, а процесс может стартовать не раньше, чем через 7 мс после завершения входящих процессов.</p>
+          <div class="formula" data-copy="Start3 = max(End1, End2) + 7
+End3 = Start3 + Duration3">Start3 = max(End1, End2) + 7
+End3 = Start3 + Duration3</div>
+          <p>Если <code>End1=4</code>, <code>End2=3</code>, длительность процесса 3 равна <code>1</code>, то:</p>
+          <div class="formula" data-copy="Start3 = max(4,3)+7 = 11
+End3 = 11+1 = 12">Start3 = max(4,3)+7 = 11
+End3 = 11+1 = 12</div>
+        </article>
+
+        <article class="card span-6">
+          <h3>Пример C. Активен ли процесс на 15-й мс</h3>
+          <p>15-я миллисекунда — это отрезок от 14 до 15. Проверяем:</p>
+          <table>
+            <thead><tr><th>Start</th><th>End</th><th>Работает на 15-й мс?</th><th>Почему</th></tr></thead>
+            <tbody>
+              <tr><td>10</td><td>15</td><td>Да</td><td>10 &lt; 15 и 15 ≥ 15</td></tr>
+              <tr><td>15</td><td>20</td><td>Нет</td><td>Старт ровно в 15, значит не работал на отрезке 14–15</td></tr>
+              <tr><td>7</td><td>14</td><td>Нет</td><td>Закончился до конца 15-й мс</td></tr>
+              <tr><td>14</td><td>16</td><td>Да</td><td>Захватывает отрезок 14–15</td></tr>
+            </tbody>
+          </table>
+        </article>
+
+        <article class="card span-6">
+          <h3>Пример D. Неизвестное t</h3>
+          <p>У одного процесса длительность <code>t</code>. Известно: все процессы должны завершиться не более чем за <code>96</code> мс.</p>
+          <ol>
+            <li>Ставим вместо <code>t</code> число <code>1</code>.</li>
+            <li>Считаем все <code>Start</code> и <code>End</code>.</li>
+            <li>Смотрим <code>МАКС(End)</code>.</li>
+            <li>Увеличиваем <code>t</code>, пока максимум не станет близок к 96.</li>
+            <li>Проверяем найденное <code>t</code> и обязательно <code>t+1</code>.</li>
+          </ol>
+          <div class="exam"><b>Ответом будет максимальное t, при котором</b> <code>МАКС(End) ≤ 96</code>.</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="lifehacks">
+      <h2>7. Лайфхаки для экзамена</h2>
+      <div class="two-col">
+        <div class="hack"><b>1. Сначала читай последний вопрос.</b><br>Не начинай считать, пока не понял, что спрашивают: время всех процессов, количество активных, завершившихся, максимум отрезка или параметр.</div>
+        <div class="hack"><b>2. Не рисуй большую диаграмму руками.</b><br>4 процесса можно на бумаге. 20, 100, 130 процессов — только таблица.</div>
+        <div class="hack"><b>3. Разбивай зависимости через «Текст по столбцам».</b><br>Разделитель почти всегда <code>;</code>. После разбиения легче делать <code>ВПР</code>.</div>
+        <div class="hack"><b>4. Фиксируй диапазоны знаками $.</b><br>Пиши <code>$A$2:$H$200</code>, иначе при протягивании формулы диапазон уедет.</div>
+        <div class="hack"><b>5. Оборачивай ВПР в ЕСЛИОШИБКА.</b><br>Это спасает от пустых зависимостей и лишних столбцов.</div>
+        <div class="hack"><b>6. Делай технический ID 0.</b><br>Строка <code>ID=0, End=0</code> уменьшает количество ошибок.</div>
+        <div class="hack"><b>7. Для подсчёта количества используй фильтр.</b><br>Столбец <code>ИСТИНА/ЛОЖЬ</code> → фильтр по <code>ИСТИНА</code> → смотри «Количество» внизу.</div>
+        <div class="hack"><b>8. Проверяй миллисекунды на маленьком примере.</b><br>Если сомневаешься в <code>&lt;</code> и <code>≥</code>, нарисуй отрезок: N-я мс = от N−1 до N.</div>
+        <div class="hack"><b>9. Не добавляй задержку всем подряд.</b><br>Если задержка после завершения входящих процессов, независимые процессы стартуют в 0.</div>
+        <div class="hack"><b>10. После ответа проверь край.</b><br>Для <code>t</code>: проверь <code>t</code> подходит, <code>t+1</code> уже не подходит.</div>
+      </div>
+    </section>
+
+    <section id="mistakes">
+      <h2>8. Самые частые ошибки</h2>
+      <article class="card">
+        <table>
+          <thead><tr><th>Ошибка</th><th>Почему плохо</th><th>Как правильно</th></tr></thead>
+          <tbody>
+            <tr><td>Складывают окончания зависимостей</td><td>Зависимости выполняются параллельно, а не подряд</td><td>Брать <code>МАКС</code>, а не сумму</td></tr>
+            <tr><td>Считают, что 15-я мс — это момент 15</td><td>Это интервал 14–15</td><td><code>Start &lt; 15</code> и <code>End ≥ 15</code></td></tr>
+            <tr><td>Добавляют задержку независимым процессам</td><td>Они не ждут поставщиков данных</td><td>Для независимых <code>Start=0</code></td></tr>
+            <tr><td>Забывают точное совпадение в ВПР</td><td>При приблизительном поиске ответы могут быть мусорными</td><td>Последний аргумент <code>0</code> или <code>ЛОЖЬ</code></td></tr>
+            <tr><td>Не фиксируют диапазон ВПР</td><td>При протягивании формула начинает искать не там</td><td><code>$A$2:$H$200</code></td></tr>
+            <tr><td>Меняют пустые ячейки на 0 во всей таблице</td><td>Можно испортить данные</td><td>Выделять только столбцы зависимостей</td></tr>
+            <tr><td>Отвечают максимум End, хотя спрашивали количество</td><td>Невнимательное чтение условия</td><td>Сначала определить тип вопроса</td></tr>
+            <tr><td>Верят первому подобранному t</td><td>Может быть не максимальное</td><td>Проверить <code>t+1</code></td></tr>
+          </tbody>
+        </table>
+      </article>
+    </section>
+
+    <section id="checklist">
+      <h2>9. Чек-лист решения за 7 минут</h2>
+      <article class="card">
+        <div class="steps">
+          <div class="step"><b>Прочитай вопрос.</b> Что ищем: время, количество, момент, интервал, параметр?</div>
+          <div class="step"><b>Открой .ods.</b> Проверь, где ID, длительность, зависимости.</div>
+          <div class="step"><b>Разбей зависимости по <code>;</code>.</b> Получи отдельные столбцы зависимостей.</div>
+          <div class="step"><b>Создай Start и End.</b> Start = максимум окончаний зависимостей, End = Start + длительность.</div>
+          <div class="step"><b>Учти особые слова.</b> Задержка, N-я миллисекунда, первые T мс, неизвестное t, сдвиги.</div>
+          <div class="step"><b>Получай ответ нужным способом.</b> Max End, Count End≤T, Count active, Max streak, подбор t.</div>
+          <div class="step"><b>Проверь крайний случай.</b> Особенно знаки <code>&lt;</code>/<code>≥</code>, задержку и <code>t+1</code>.</div>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Мини-шпаргалка</h3>
+        <table>
+          <thead><tr><th>Нужно найти</th><th>Формула / действие</th></tr></thead>
+          <tbody>
+            <tr><td>Начало процесса</td><td><code>Start = МАКС(End зависимостей)</code></td></tr>
+            <tr><td>Окончание процесса</td><td><code>End = Start + Duration</code></td></tr>
+            <tr><td>Все процессы завершены</td><td><code>МАКС(End)</code></td></tr>
+            <tr><td>Процесс завершился за первые T мс</td><td><code>End ≤ T</code></td></tr>
+            <tr><td>Процесс работал на N-й мс</td><td><code>Start &lt; N</code> и <code>End ≥ N</code></td></tr>
+            <tr><td>Задержка X мс</td><td><code>Start = МАКС(End зависимостей) + X</code></td></tr>
+            <tr><td>Неизвестное t</td><td>Подбор максимального <code>t</code>, проверка <code>t+1</code></td></tr>
+          </tbody>
+        </table>
+      </article>
+    </section>
+
+    <footer class="footer">
+      <p>Конспект сделан как один HTML-файл: можно открыть в браузере, распечатать или сохранить как PDF. Формулы ориентированы на русскую локализацию Excel/LibreOffice Calc. Если в твоей версии функций используются запятые вместо точек с запятой, замени разделители аргументов.</p>
+    </footer>
+  </main>
+
+  <script>
+    document.querySelectorAll('.formula').forEach((box) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = 'copy';
+      btn.addEventListener('click', async () => {
+        const text = box.dataset.copy || box.textContent.replace('copy','').trim();
+        try {
+          await navigator.clipboard.writeText(text);
+          btn.textContent = 'ok';
+          setTimeout(() => btn.textContent = 'copy', 900);
+        } catch (e) {
+          btn.textContent = 'выдели';
+          setTimeout(() => btn.textContent = 'copy', 1200);
+        }
+      });
+      box.appendChild(btn);
+    });
+  </script>
+</body>
+</html>
