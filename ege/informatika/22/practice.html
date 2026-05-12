@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ЕГЭ информатика 2026 — задание 22: интерактивный тренажёр</title>
+  <style>
+    :root{
+      --bg:#07111f;
+      --bg2:#0d1b2f;
+      --panel:#10213a;
+      --panel2:#172b49;
+      --text:#f2f8ff;
+      --muted:#afbdd1;
+      --line:rgba(255,255,255,.12);
+      --green:#58cc02;
+      --green2:#7bea2d;
+      --blue:#2dd4ff;
+      --yellow:#ffd34d;
+      --red:#ff5c7a;
+      --purple:#b68cff;
+      --shadow:0 18px 50px rgba(0,0,0,.34);
+      --radius:24px;
+      --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+      --sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 0%, rgba(88,204,2,.20), transparent 28%),
+        radial-gradient(circle at 85% 10%, rgba(45,212,255,.16), transparent 30%),
+        linear-gradient(180deg,#06101f 0%,var(--bg) 48%,#030814 100%);
+      line-height:1.55;
+    }
+    button,input,select{font:inherit}
+    a{color:var(--blue)}
+    .wrap{max-width:1220px;margin:0 auto;padding:24px 16px 72px}
+    .topbar{
+      position:sticky;top:0;z-index:20;margin:-24px -16px 20px;padding:12px 16px;
+      backdrop-filter:blur(16px);background:rgba(7,17,31,.74);border-bottom:1px solid var(--line)
+    }
+    .topbar-inner{max-width:1220px;margin:0 auto;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .brand{display:flex;gap:10px;align-items:center;font-weight:950;letter-spacing:-.03em}
+    .mascot{width:42px;height:42px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,var(--green),#b7ff55);box-shadow:0 10px 24px rgba(88,204,2,.25);font-size:24px}
+    .stats{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .pill{border:1px solid var(--line);background:rgba(255,255,255,.06);border-radius:999px;padding:7px 11px;color:#eaf6ff;font-weight:850;font-size:14px}
+    .pill.good{border-color:rgba(88,204,2,.35);background:rgba(88,204,2,.10)}
+    .pill.warn{border-color:rgba(255,211,77,.35);background:rgba(255,211,77,.10)}
+    .hero{
+      padding:34px 24px;border:1px solid var(--line);border-radius:32px;background:linear-gradient(135deg,rgba(16,33,58,.96),rgba(23,43,73,.82));
+      box-shadow:var(--shadow);position:relative;overflow:hidden
+    }
+    .hero:after{content:"22";position:absolute;right:22px;bottom:-44px;font-size:180px;font-weight:1000;color:rgba(255,255,255,.045);line-height:1}
+    .eyebrow{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(88,204,2,.40);background:rgba(88,204,2,.12);border-radius:999px;padding:7px 12px;font-weight:950;color:#eaffdf;font-size:14px}
+    h1{font-size:clamp(31px,5vw,58px);line-height:1.02;margin:16px 0 12px;letter-spacing:-.055em;max-width:920px}
+    h2{font-size:clamp(24px,3vw,36px);letter-spacing:-.035em;line-height:1.13;margin:0 0 12px}
+    h3{font-size:22px;line-height:1.2;margin:0 0 10px;letter-spacing:-.02em}
+    p{margin:9px 0;color:var(--muted)}
+    .lead{font-size:18px;max-width:820px;color:#d9e8f8}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+    .btn{
+      border:0;border-radius:18px;padding:12px 16px;font-weight:950;color:#06101f;cursor:pointer;background:var(--green);box-shadow:0 6px 0 #3f9800,0 14px 26px rgba(88,204,2,.22);
+      transform:translateY(0);transition:.12s ease
+    }
+    .btn:hover{transform:translateY(-1px);filter:saturate(1.08)}
+    .btn:active{transform:translateY(4px);box-shadow:0 2px 0 #3f9800}
+    .btn.secondary{background:#203957;color:#eaf6ff;box-shadow:0 6px 0 #13253d;border:1px solid rgba(255,255,255,.08)}
+    .btn.blue{background:var(--blue);box-shadow:0 6px 0 #1585a3;color:#04101a}
+    .btn.red{background:var(--red);box-shadow:0 6px 0 #a32740;color:white}
+    .btn.ghost{background:transparent;color:#eaf6ff;border:1px solid var(--line);box-shadow:none}
+    .btn.small{padding:9px 12px;border-radius:14px;font-size:14px;box-shadow:0 4px 0 rgba(0,0,0,.24)}
+    .layout{display:grid;grid-template-columns:1fr;gap:18px;margin-top:22px}
+    @media (min-width:980px){.layout{grid-template-columns:330px 1fr}.side{position:sticky;top:88px;align-self:start}}
+    .card{border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(180deg,rgba(23,43,73,.94),rgba(16,33,58,.88));box-shadow:0 12px 34px rgba(0,0,0,.18);padding:18px}
+    .lesson-list{display:grid;gap:11px}
+    .lesson-btn{
+      width:100%;text-align:left;border:1px solid var(--line);background:rgba(255,255,255,.045);color:#eaf6ff;border-radius:20px;padding:13px;cursor:pointer;display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center
+    }
+    .lesson-btn:hover,.lesson-btn.active{background:rgba(88,204,2,.12);border-color:rgba(88,204,2,.42)}
+    .node{width:44px;height:44px;border-radius:16px;display:grid;place-items:center;font-size:21px;background:#213b5f;border:1px solid rgba(255,255,255,.10)}
+    .lesson-btn.done .node{background:linear-gradient(135deg,var(--green),#b7ff55);color:#06101f}
+    .lesson-title{font-weight:950;line-height:1.15}.lesson-sub{font-size:13px;color:var(--muted);margin-top:3px}.lesson-score{font-size:13px;color:#d8fdd1;font-weight:900}
+    .progress-wrap{height:16px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.09);overflow:hidden;margin:12px 0 4px}
+    .progress{height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--green2));border-radius:999px;transition:width .24s ease}
+    .task-head{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}
+    .leveltag{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(45,212,255,.28);background:rgba(45,212,255,.09);padding:6px 10px;border-radius:999px;color:#dff8ff;font-size:13px;font-weight:950}
+    .prompt{font-size:20px;color:#f7fbff;font-weight:900;margin:8px 0 14px;letter-spacing:-.01em}
+    .theory{border:1px dashed rgba(255,255,255,.18);background:rgba(255,255,255,.045);border-radius:18px;padding:12px 14px;margin:12px 0;color:#d9e8f8}
+    .options{display:grid;gap:10px;margin:14px 0}
+    .option{
+      border:2px solid rgba(255,255,255,.10);background:rgba(255,255,255,.055);color:#eef7ff;border-radius:18px;padding:13px 14px;text-align:left;cursor:pointer;font-weight:750;display:flex;gap:10px;align-items:flex-start
+    }
+    .option:hover{border-color:rgba(45,212,255,.42);background:rgba(45,212,255,.08)}
+    .option.selected{border-color:var(--blue);background:rgba(45,212,255,.15)}
+    .option.correct{border-color:var(--green);background:rgba(88,204,2,.15)}
+    .option.wrong{border-color:var(--red);background:rgba(255,92,122,.13)}
+    .letter{min-width:26px;height:26px;border-radius:9px;display:grid;place-items:center;background:rgba(255,255,255,.10);font-weight:950;color:#dcecff}
+    .answer-line{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}
+    .input{
+      width:min(260px,100%);background:#081423;border:2px solid rgba(255,255,255,.12);color:#fff;border-radius:16px;padding:13px 14px;font-size:18px;font-weight:950;outline:none
+    }
+    .input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(45,212,255,.10)}
+    .hint{font-size:14px;color:#9fb3ca}.mini{font-size:13px;color:#9fb3ca}
+    .feedback{display:none;margin-top:16px;border-radius:20px;padding:15px 16px;border:1px solid var(--line)}
+    .feedback.show{display:block}.feedback.good{background:rgba(88,204,2,.11);border-color:rgba(88,204,2,.35)}.feedback.bad{background:rgba(255,92,122,.11);border-color:rgba(255,92,122,.35)}
+    .feedback b{color:#fff}.solution{margin-top:9px;color:#d7e6f6}.solution code,.mono{font-family:var(--mono)}
+    table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:18px;overflow:hidden;margin:14px 0;font-size:14px}
+    th,td{padding:10px 11px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}th{background:rgba(45,212,255,.10);color:#effbff}td{color:#dbe8f6}tr:last-child td{border-bottom:0}
+    .table-wrap{overflow:auto;border-radius:18px}.table-wrap table{min-width:620px}
+    .formula{font-family:var(--mono);background:#07101d;border:1px solid rgba(45,212,255,.20);border-radius:16px;padding:12px;margin:10px 0;color:#ddf7ff;overflow:auto;white-space:pre-wrap}
+    .exam-box{border:1px solid rgba(255,211,77,.28);background:rgba(255,211,77,.09);border-radius:18px;padding:13px;margin:12px 0;color:#fff4cb}
+    .exam-box b{color:#fff}
+    .map-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+    @media (max-width:680px){.map-row{grid-template-columns:1fr 1fr}.hero:after{display:none}.prompt{font-size:18px}}
+    .tile{border:1px solid var(--line);background:rgba(255,255,255,.045);border-radius:18px;padding:12px;text-align:center}.tile b{font-size:20px}.tile span{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+    .footer{margin-top:26px;color:#90a4bd;font-size:13px;text-align:center}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.62);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}.modal.show{display:flex}.modal-card{max-width:620px;width:100%;background:#10213a;border:1px solid var(--line);border-radius:28px;padding:22px;box-shadow:var(--shadow)}
+    .confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:80}.confetti i{position:absolute;width:10px;height:18px;border-radius:6px;background:var(--green);animation:fall 900ms ease-out forwards}.confetti i:nth-child(3n){background:var(--blue)}.confetti i:nth-child(4n){background:var(--yellow)}.confetti i:nth-child(5n){background:var(--purple)}@keyframes fall{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(420deg);opacity:0}}
+    @media print{body{background:#fff;color:#111}.topbar,.actions,.btn,.side,.feedback{display:none!important}.wrap{max-width:none;padding:0}.hero,.card{background:#fff;color:#111;box-shadow:none;border-color:#ddd}p,td,.mini,.hint{color:#222}.prompt,h1,h2,h3,th{color:#111}.formula{background:#f6f6f6;color:#111;border-color:#ddd}}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand"><div class="mascot">🦉</div><div>22 Trainer · ЕГЭ информатика</div></div>
+      <div class="stats">
+        <span class="pill good" id="xpPill">XP: 0</span>
+        <span class="pill warn" id="streakPill">Серия: 0</span>
+        <span class="pill" id="accuracyPill">Точность: —</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <section class="hero">
+      <span class="eyebrow">Интерактивный файл №2 · практика после теории</span>
+      <h1>Тренажёр по заданию 22: от простых вопросов до рандомных ЕГЭ-задач</h1>
+      <p class="lead">Сначала короткие вопросы на понимание, потом формулы и ловушки, а в финале — новые таблицы процессов каждый раз. Ответ проверяется строго: как в ЕГЭ, обычно одним числом без единиц измерения.</p>
+      <div class="actions">
+        <button class="btn" onclick="startLesson('warmup')">Начать тренировку</button>
+        <button class="btn blue" onclick="startLesson('random')">Сгенерировать финальный вариант</button>
+        <button class="btn secondary" onclick="showExamRules()">Правила ответа как на ЕГЭ</button>
+        <button class="btn ghost" onclick="resetProgress()">Сбросить прогресс</button>
+      </div>
+      <div class="map-row">
+        <div class="tile"><b>6</b><span>уроков по нарастанию</span></div>
+        <div class="tile"><b>30+</b><span>проверок и микрозадач</span></div>
+        <div class="tile"><b>∞</b><span>рандомных вариантов</span></div>
+        <div class="tile"><b>1 число</b><span>финальный ответ</span></div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <aside class="side card">
+        <h3>Карта навыков</h3>
+        <p class="mini">Иди сверху вниз. Финальный блок можно перегенерировать сколько угодно раз.</p>
+        <div class="lesson-list" id="lessonList"></div>
+      </aside>
+
+      <section class="card" id="workArea">
+        <div class="task-head">
+          <div>
+            <span class="leveltag" id="levelTag">Выбери урок слева</span>
+            <h2 id="lessonTitle">Готов к прокачке?</h2>
+          </div>
+          <button class="btn small secondary" onclick="renderLessonOverview()">Оглавление</button>
+        </div>
+        <div class="progress-wrap"><div class="progress" id="progressBar"></div></div>
+        <div id="taskBox">
+          <div class="exam-box"><b>Как пользоваться:</b> выбирай урок, отвечай, жми «Проверить». Если ошибся — смотри разбор и пробуй похожую задачу. В финале таблицы генерируются заново, поэтому ответы не заучиваются.</div>
+          <div class="theory">
+            Главная формула задания 22: <span class="mono">End = max(End зависимостей) + Duration</span>. Для независимых процессов <span class="mono">Start = 0</span>. Для N-й миллисекунды проверка такая: <span class="mono">Start &lt; N</span> и <span class="mono">End ≥ N</span>.
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <footer class="footer">Файл полностью автономный: открой в браузере и тренируйся без интернета. Сделано как продолжение теоретического HTML-конспекта.</footer>
+  </main>
+
+  <div class="modal" id="modal">
+    <div class="modal-card">
+      <h2 id="modalTitle">Правила</h2>
+      <div id="modalBody"></div>
+      <div class="actions"><button class="btn" onclick="closeModal()">Понял</button></div>
+    </div>
+  </div>
+  <div class="confetti" id="confetti"></div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const storeKey = 'ege22_duo_trainer_progress_v1';
+let state = loadState();
+let activeLesson = null;
+let activeIndex = 0;
+let selected = null;
+let checked = false;
+
+const lessonsBase = [
+  {
+    id:'warmup', icon:'🌱', title:'Разминка', sub:'смысл процессов и зависимостей', xp:10,
+    theory:'Здесь проверяется, понял ли ты саму модель: процесс либо независимый, либо ждёт завершения всех процессов, от которых зависит.',
+    questions:[
+      {kind:'choice', prompt:'Что означает запись зависимостей «1; 2» у процесса 3?', options:['Процесс 3 выполняется вместо процессов 1 и 2','Процесс 3 может стартовать только после завершения и 1, и 2','Процесс 3 длится 1+2 миллисекунды','Процесс 3 запускает процессы 1 и 2'], answer:1, explain:'Зависимость означает ожидание результатов. Если зависимостей несколько, текущий процесс ждёт все.'},
+      {kind:'choice', prompt:'Если в зависимостях стоит 0, что это обычно значит?', options:['Процесс невозможен','Процесс независимый и может стартовать в момент 0','Процесс длится 0 мс','Процесс зависит от всех предыдущих'], answer:1, explain:'ID = 0 в столбце зависимостей — условное обозначение независимого процесса.'},
+      {kind:'input', prompt:'Процесс 1 длится 4 мс и не имеет зависимостей. Чему равно End?', answer:'4', explain:'Независимый процесс стартует в 0, поэтому End = 0 + 4 = 4.'},
+      {kind:'choice', prompt:'Почему в формуле для зависимого процесса берут максимум окончаний предков, а не сумму?', options:['Потому что процессы-предки могли выполняться параллельно','Потому что сумма запрещена в Excel','Потому что длительности всегда одинаковые','Потому что максимум проще считать'], answer:0, explain:'Текущий процесс ждёт последнего завершившегося предка. Остальные к этому моменту уже готовы.'},
+      {kind:'input', prompt:'Процесс 3 длится 1 мс, зависит от процессов с End = 4 и End = 3. Чему равно End процесса 3?', answer:'5', explain:'Start = max(4, 3) = 4. End = 4 + 1 = 5.'}
+    ]
+  },
+  {
+    id:'formula', icon:'🧮', title:'Формулы', sub:'Start, End, задержка', xp:12,
+    theory:'В таблице почти всегда удобно добавить два столбца: Start и End. Сначала считаешь начало, потом окончание.',
+    questions:[
+      {kind:'choice', prompt:'Базовая формула окончания зависимого процесса без задержки:', options:['End = сумма End зависимостей + Duration','End = max(End зависимостей) + Duration','End = Duration − max(End зависимостей)','End = Start / Duration'], answer:1, explain:'Зависимый процесс стартует после самого позднего предка: End = max(End зависимостей) + Duration.'},
+      {kind:'choice', prompt:'Что меняется, если сказано «не раньше, чем через 7 мс после завершения входящих процессов»?', options:['К длительности каждого процесса добавляется 7','К Start зависимых процессов добавляется 7','Ответ всегда увеличивается ровно на 7','Нужно брать минимум End зависимостей'], answer:1, explain:'Пауза стоит между завершением предков и стартом текущего процесса: Start = max(End) + 7.'},
+      {kind:'input', prompt:'End предков: 10, 14, 8. Длительность текущего процесса 5. Задержки нет. Чему равен End?', answer:'19', explain:'Start = max(10, 14, 8) = 14. End = 14 + 5 = 19.'},
+      {kind:'input', prompt:'End предков: 10 и 14. Есть задержка 7 мс. Длительность текущего процесса 5. Чему равен End?', answer:'26', explain:'Start = max(10, 14) + 7 = 21. End = 21 + 5 = 26.'},
+      {kind:'choice', prompt:'Нужно ли добавлять задержку независимому процессу, если задержка задана «после завершения входящих процессов»?', options:['Да, всегда','Нет, если в условии не сказано отдельно','Только если длительность больше задержки','Только если ID процесса нечётный'], answer:1, explain:'У независимого процесса нет входящих процессов, поэтому обычно он стартует в 0.'}
+    ]
+  },
+  {
+    id:'excel', icon:'📊', title:'Excel / Calc', sub:'ВПР, МАКС, И, ЕСЛИОШИБКА', xp:14,
+    theory:'ЕГЭ-шный файл чаще всего проще решать таблицей: разбить зависимости по «;», добавить Start и End, протянуть формулы вниз.',
+    questions:[
+      {kind:'choice', prompt:'Какой инструмент удобнее всего применить к столбцу зависимостей вида «1; 2; 8»?', options:['Фильтр по цвету','Данные → Текст по столбцам, разделитель ;','Сортировку по алфавиту','Замену всех чисел на 0'], answer:1, explain:'Разбитые зависимости проще подставлять в ВПР/МАКС.'},
+      {kind:'choice', prompt:'Зачем фиксировать диапазон ВПР знаками $: $A$2:$H$200?', options:['Чтобы формула не пересчитывалась','Чтобы диапазон не съезжал при протягивании','Чтобы Excel рисовал диаграмму','Чтобы удалить ошибки'], answer:1, explain:'Без фиксации при протягивании вниз диапазон поиска смещается.'},
+      {kind:'choice', prompt:'Что делает ЕСЛИОШИБКА(ВПР(...);0) в формулах задания 22?', options:['Скрывает пустые/лишние зависимости и возвращает 0 вместо ошибки','Умножает длительность на 0','Запускает процесс заново','Ищет минимальное значение'], answer:0, explain:'Если зависимости в ячейке нет или ВПР не нашёл ID, формула не ломается, а получает 0.'},
+      {kind:'choice', prompt:'Какая формула проверяет, что процесс активен на 15-й миллисекунде, если Start в G2, End в H2?', options:['=И(G2<=15;H2>15)','=И(G2<15;H2>=15)','=ИЛИ(G2<15;H2>=15)','=H2<=15'], answer:1, explain:'15-я мс — это интервал 14–15. Процесс должен начаться до 15 и закончиться не раньше 15.'},
+      {kind:'choice', prompt:'Какой ответ нужен для фразы «минимальное время выполнения всей совокупности процессов»?', options:['Количество строк','Минимум столбца Start','Максимум столбца End','Сумма всех длительностей'], answer:2, explain:'Все процессы завершены, когда завершился самый поздний процесс.'}
+    ]
+  },
+  {
+    id:'milliseconds', icon:'⏱️', title:'Миллисекунды', sub:'границы интервалов и активность', xp:16,
+    theory:'N-я миллисекунда — это не точка N, а отрезок времени от N−1 до N. На этом чаще всего ошибаются.',
+    questions:[
+      {kind:'choice', prompt:'Что такое 32-я миллисекунда?', options:['Точка времени 32','Отрезок от 31 до 32','Отрезок от 32 до 33','Любой момент после 32'], answer:1, explain:'Первая мс — 0–1, вторая — 1–2, значит 32-я — 31–32.'},
+      {kind:'choice', prompt:'Процесс Start = 15, End = 20. Работал ли он на 15-й миллисекунде?', options:['Да','Нет'], answer:1, explain:'15-я мс — это 14–15. Процесс стартует ровно в 15, то есть уже после этого интервала.'},
+      {kind:'choice', prompt:'Процесс Start = 10, End = 15. Работал ли он на 15-й миллисекунде?', options:['Да','Нет'], answer:0, explain:'Он захватывает интервал 14–15: Start < 15 и End ≥ 15.'},
+      {kind:'input', prompt:'Процессы имеют пары Start-End: 0-4, 1-5, 5-9, 3-8. Сколько процессов активны на 5-й мс?', answer:'3', explain:'Проверяем Start < 5 и End ≥ 5: подходят 1–5, 3–8 и 0–4? Нет, 0–4 не подходит. 5–9 тоже не подходит, старт ровно в 5. Подходят 1–5 и 3–8 = 2. Но стоп: 5-я мс — 4–5, процесс 0–4 закончился до неё, процесс 5–9 начался после неё. Ответ 2.', overrideAnswer:'2'},
+      {kind:'choice', prompt:'Какая проверка нужна для «процесс завершился за первые T мс»?', options:['Start < T','End <= T','End >= T','Start = T'], answer:1, explain:'Если процесс закончился не позже момента T, он завершился за первые T миллисекунд.'}
+    ]
+  },
+  {
+    id:'types', icon:'🎯', title:'Типы вопросов', sub:'распознавание формулировок', xp:18,
+    theory:'Перед вычислениями всегда читай последний вопрос: максимум End, количество активных, завершившихся, параметр t или максимальный отрезок — это разные действия.',
+    questions:[
+      {kind:'choice', prompt:'Фраза: «Определите минимальное время, через которое завершится выполнение всей совокупности процессов». Что считать?', options:['МАКС(End)','КОЛИЧЕСТВО(End)','МИН(Start)','СУММ(Duration)'], answer:0, explain:'Ищем момент, когда закончится последний процесс.'},
+      {kind:'choice', prompt:'Фраза: «Сколько процессов выполнялось в течение 32-й миллисекунды?» Что считать?', options:['End <= 32','Start < 32 и End >= 32','Start >= 32','Duration = 32'], answer:1, explain:'Нужны процессы, активные на интервале 31–32.'},
+      {kind:'choice', prompt:'Фраза: «Какое максимальное значение t, если все процессы завершились не более чем за 96 мс?» Что делать?', options:['Поставить t = 96','Подбирать максимальное t и проверить t+1','Сложить все длительности','Удалить процесс с t'], answer:1, explain:'Нужно максимальное допустимое значение параметра, а не первое подходящее.'},
+      {kind:'choice', prompt:'Фраза: «Максимальная продолжительность отрезка, когда одновременно выполнялось не менее K процессов». Что нужно после подсчёта активных по каждой мс?', options:['Найти непрерывную серию, где количество >= K','Найти один самый длинный процесс','Найти минимум End','Посчитать только независимые процессы'], answer:0, explain:'Сначала считаем активных по каждой миллисекунде, потом длину максимальной непрерывной серии.'},
+      {kind:'choice', prompt:'Если в условии сказано, что количество одновременно выполняемых процессов может быть любым, что это значит?', options:['Все готовые процессы можно запускать параллельно','Можно запустить только один процесс','Нужно строить очередь процессора','Длительности надо делить на количество процессов'], answer:0, explain:'Ограничения на процессоры нет: как только зависимости готовы, процесс стартует.'}
+    ]
+  },
+  {id:'random', icon:'🔥', title:'Финал ЕГЭ', sub:'рандомные таблицы и строгие ответы', xp:25, random:true, theory:'Финальный блок генерирует новые таблицы процессов. Отвечай одним целым числом, как в ЕГЭ.', questions:[]}
+];
+
+function loadState(){
+  try { return JSON.parse(localStorage.getItem(storeKey)) || {xp:0, streak:0, attempts:0, correct:0, done:{}}; }
+  catch(e){ return {xp:0, streak:0, attempts:0, correct:0, done:{}}; }
+}
+function saveState(){ localStorage.setItem(storeKey, JSON.stringify(state)); }
+function normalize(v){ return String(v ?? '').trim().replace(',', '.').replace(/\s+/g,''); }
+function lessonById(id){ return lessonsBase.find(l => l.id === id); }
+function escapeHtml(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function depsText(deps){ return deps.length === 1 && deps[0] === 0 ? '0' : deps.join('; '); }
+
+function updateStats(){
+  $('#xpPill').textContent = 'XP: ' + state.xp;
+  $('#streakPill').textContent = 'Серия: ' + state.streak;
+  $('#accuracyPill').textContent = state.attempts ? 'Точность: ' + Math.round(state.correct / state.attempts * 100) + '%' : 'Точность: —';
+}
+function renderLessons(){
+  const box = $('#lessonList');
+  box.innerHTML = lessonsBase.map(l => {
+    const done = state.done[l.id] || 0;
+    const cls = (activeLesson && activeLesson.id === l.id ? ' active' : '') + (done >= 100 ? ' done' : '');
+    return `<button class="lesson-btn${cls}" onclick="startLesson('${l.id}')">
+      <div class="node">${l.icon}</div>
+      <div><div class="lesson-title">${l.title}</div><div class="lesson-sub">${l.sub}</div></div>
+      <div class="lesson-score">${done}%</div>
+    </button>`;
+  }).join('');
+}
+function renderLessonOverview(){
+  activeLesson = null; activeIndex = 0; selected = null; checked = false;
+  $('#levelTag').textContent = 'Карта курса';
+  $('#lessonTitle').textContent = 'Все типы задания 22';
+  $('#progressBar').style.width = '0%';
+  $('#taskBox').innerHTML = `
+    <div class="theory"><b>Мини-маршрут:</b> сначала пойми зависимости, потом формулы Start/End, затем миллисекунды, типы вопросов и только после этого финальные варианты.</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Тип</th><th>Фраза-триггер</th><th>Что считать</th></tr></thead>
+      <tbody>
+        <tr><td>Минимальное время</td><td>«завершится вся совокупность»</td><td><span class="mono">МАКС(End)</span></td></tr>
+        <tr><td>Задержка</td><td>«не раньше, чем через X мс»</td><td><span class="mono">Start = max(End) + X</span></td></tr>
+        <tr><td>N-я мс</td><td>«в течение N-й миллисекунды»</td><td><span class="mono">Start &lt; N; End ≥ N</span></td></tr>
+        <tr><td>Первые T мс</td><td>«завершено за первые T мс»</td><td><span class="mono">End ≤ T</span></td></tr>
+        <tr><td>Неизвестное t</td><td>«не более M мс»</td><td>подбор максимального <span class="mono">t</span></td></tr>
+        <tr><td>Максимум параллельных</td><td>«максимальное число одновременно»</td><td>посчитать активных по каждой мс</td></tr>
+      </tbody>
+    </table></div>
+    <div class="actions"><button class="btn" onclick="startLesson('warmup')">Начать с разминки</button><button class="btn blue" onclick="startLesson('random')">Сразу финал</button></div>`;
+  renderLessons();
+}
+
+function startLesson(id){
+  activeLesson = JSON.parse(JSON.stringify(lessonById(id)));
+  if(activeLesson.random){ activeLesson.questions = generateRandomExam(); }
+  activeIndex = 0; selected = null; checked = false;
+  renderLessons(); renderQuestion();
+}
+function currentQuestion(){ return activeLesson.questions[activeIndex]; }
+function progressPct(){ return activeLesson ? Math.round(activeIndex / activeLesson.questions.length * 100) : 0; }
+
+function renderQuestion(){
+  if(!activeLesson) return renderLessonOverview();
+  if(activeIndex >= activeLesson.questions.length) return finishLesson();
+  selected = null; checked = false;
+  const q = currentQuestion();
+  $('#levelTag').textContent = `${activeLesson.icon} ${activeLesson.title} · ${activeIndex + 1}/${activeLesson.questions.length}`;
+  $('#lessonTitle').textContent = activeLesson.title;
+  $('#progressBar').style.width = progressPct() + '%';
+  let body = `<div class="theory">${activeLesson.theory}</div>`;
+  body += `<div class="prompt">${q.prompt}</div>`;
+  if(q.kind === 'choice'){
+    body += `<div class="options">${q.options.map((op,i)=>`<button class="option" data-i="${i}" onclick="selectOption(${i})"><span class="letter">${String.fromCharCode(65+i)}</span><span>${op}</span></button>`).join('')}</div>`;
+  } else if(q.kind === 'input'){
+    body += `<div class="answer-line"><input class="input" id="answerInput" inputmode="decimal" autocomplete="off" placeholder="Ответ числом"><button class="btn" onclick="checkAnswer()">Проверить</button></div><div class="hint">Пиши только ответ, без «мс» и пояснений.</div>`;
+  } else if(q.kind === 'generated'){
+    body += renderGenerated(q);
+    body += `<div class="answer-line"><input class="input" id="answerInput" inputmode="numeric" autocomplete="off" placeholder="Ответ ЕГЭ"><button class="btn" onclick="checkAnswer()">Проверить</button><button class="btn secondary" onclick="replaceGenerated()">Новая похожая</button></div><div class="hint">Ответ — одно целое число. Единицы измерения не писать.</div>`;
+  }
+  if(q.kind === 'choice') body += `<div class="actions"><button class="btn" onclick="checkAnswer()">Проверить</button></div>`;
+  body += `<div class="feedback" id="feedback"></div>`;
+  $('#taskBox').innerHTML = body;
+  const inp = $('#answerInput'); if(inp){ inp.focus(); inp.addEventListener('keydown', e => { if(e.key === 'Enter') checkAnswer(); }); }
+}
+function selectOption(i){
+  if(checked) return;
+  selected = i;
+  document.querySelectorAll('.option').forEach(b => b.classList.toggle('selected', Number(b.dataset.i) === i));
+}
+function answerOf(q){ return q.overrideAnswer ?? q.answer; }
+function checkAnswer(){
+  if(!activeLesson || checked) return;
+  const q = currentQuestion();
+  let ok = false;
+  if(q.kind === 'choice'){
+    if(selected === null){ flashFeedback(false,'Выбери вариант ответа.'); return; }
+    ok = selected === q.answer;
+    document.querySelectorAll('.option').forEach(b => {
+      const i = Number(b.dataset.i);
+      if(i === q.answer) b.classList.add('correct');
+      if(i === selected && !ok) b.classList.add('wrong');
+    });
+  } else {
+    const val = normalize($('#answerInput').value);
+    ok = val === normalize(answerOf(q));
+  }
+  checked = true;
+  state.attempts += 1;
+  if(ok){ state.correct += 1; state.streak += 1; state.xp += activeLesson.xp; }
+  else { state.streak = 0; }
+  saveState(); updateStats();
+  showResult(ok, q);
+}
+function flashFeedback(isGood, msg){
+  const fb = $('#feedback');
+  fb.className = 'feedback show ' + (isGood ? 'good' : 'bad');
+  fb.innerHTML = msg;
+}
+function showResult(ok, q){
+  const fb = $('#feedback');
+  fb.className = 'feedback show ' + (ok ? 'good' : 'bad');
+  const trueAnswer = escapeHtml(answerOf(q));
+  let html = ok ? `<b>Верно!</b> +${activeLesson.xp} XP` : `<b>Пока нет.</b> Правильный ответ: <span class="mono">${trueAnswer}</span>`;
+  html += `<div class="solution">${q.explain || generatedSolution(q)}</div>`;
+  html += `<div class="actions"><button class="btn" onclick="nextQuestion()">Дальше</button>`;
+  if(!ok) html += `<button class="btn secondary" onclick="retryQuestion()">Повторить вопрос</button>`;
+  html += `</div>`;
+  fb.innerHTML = html;
+  if(ok && activeLesson.id === 'random') confetti();
+}
+function nextQuestion(){ activeIndex += 1; renderQuestion(); }
+function retryQuestion(){ checked = false; renderQuestion(); }
+function finishLesson(){
+  const pct = 100;
+  state.done[activeLesson.id] = Math.max(state.done[activeLesson.id] || 0, pct);
+  saveState(); updateStats(); renderLessons();
+  $('#levelTag').textContent = `${activeLesson.icon} ${activeLesson.title} · завершено`;
+  $('#lessonTitle').textContent = activeLesson.id === 'random' ? 'Финальный вариант пройден' : 'Урок пройден';
+  $('#progressBar').style.width = '100%';
+  $('#taskBox').innerHTML = `<div class="exam-box"><b>Красиво!</b> Ты прошёл блок «${activeLesson.title}». ${activeLesson.id === 'random' ? 'Теперь можно сгенерировать новый вариант и проверить, не заучил ли ты ответы.' : 'Переходи к следующему уровню по карте навыков.'}</div>
+    <div class="actions"><button class="btn" onclick="startNextLesson()">Следующий урок</button><button class="btn blue" onclick="startLesson('random')">Новый финальный вариант</button><button class="btn secondary" onclick="renderLessonOverview()">К оглавлению</button></div>`;
+  confetti();
+}
+function startNextLesson(){
+  const i = lessonsBase.findIndex(l => activeLesson && l.id === activeLesson.id);
+  const next = lessonsBase[Math.min(i + 1, lessonsBase.length - 1)];
+  startLesson(next.id);
+}
+function replaceGenerated(){
+  const subtype = currentQuestion().subtype;
+  activeLesson.questions[activeIndex] = makeGeneratedBySubtype(subtype);
+  renderQuestion();
+}
+function resetProgress(){
+  if(!confirm('Сбросить XP, серию и проценты прохождения?')) return;
+  state = {xp:0, streak:0, attempts:0, correct:0, done:{}}; saveState(); updateStats(); renderLessons(); renderLessonOverview();
+}
+function showExamRules(){
+  $('#modalTitle').textContent = 'Как отвечать в финале';
+  $('#modalBody').innerHTML = `<div class="exam-box"><b>Режим ЕГЭ:</b> вводи только целое число. Без «мс», пробелов, слов и пояснений.</div>
+  <p>Проверка строгая: если спрашивают количество процессов — это число процессов; если минимальное время — число миллисекунд; если параметр t — максимальное допустимое значение t.</p>
+  <p>После проверки тренажёр показывает разбор: Start, End и причину правильного ответа.</p>`;
+  $('#modal').classList.add('show');
+}
+function closeModal(){ $('#modal').classList.remove('show'); }
+
+function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=randInt(0,i); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+function sample(arr,k){ return shuffle([...arr]).slice(0,k); }
+function genProcesses(n=8, maxDeps=3){
+  const ps = [];
+  for(let id=1; id<=n; id++){
+    const dur = randInt(1,9);
+    let deps = [0];
+    if(id > 1 && Math.random() > 0.28){
+      const maxK = Math.min(maxDeps, id-1);
+      const k = randInt(1,maxK);
+      deps = sample(Array.from({length:id-1},(_,i)=>i+1), k).sort((a,b)=>a-b);
+    }
+    ps.push({id,dur,deps});
+  }
+  return ps;
+}
+function compute(ps, opts={}){
+  const endBy = {0:0}; const startBy = {0:0}; const rows = [];
+  const delay = opts.delay || 0;
+  const tId = opts.tId || null;
+  const tVal = opts.tVal || 1;
+  for(const p of ps){
+    const depMax = (p.deps.length === 1 && p.deps[0] === 0) ? 0 : Math.max(...p.deps.map(d => endBy[d]));
+    const start = (p.deps.length === 1 && p.deps[0] === 0) ? 0 : depMax + delay;
+    const dur = p.id === tId ? tVal : p.dur;
+    const end = start + dur;
+    startBy[p.id] = start; endBy[p.id] = end;
+    rows.push({...p, start, end, usedDur: dur});
+  }
+  return {rows, maxEnd: Math.max(...rows.map(r=>r.end)), endBy, startBy};
+}
+function tableHtml(ps, schedule=null){
+  const showSchedule = !!schedule;
+  const rows = showSchedule ? schedule.rows : ps;
+  return `<div class="table-wrap"><table><thead><tr><th>ID</th><th>Длительность</th><th>Зависит от</th>${showSchedule ? '<th>Start</th><th>End</th>' : ''}</tr></thead><tbody>` +
+    rows.map(p => `<tr><td>${p.id}</td><td>${showSchedule && p.dur === 't' ? p.usedDur + ' (t)' : (p.dur === 't' ? 't' : p.dur)}</td><td>${depsText(p.deps)}</td>${showSchedule ? `<td>${p.start}</td><td>${p.end}</td>` : ''}</tr>`).join('') +
+    `</tbody></table></div>`;
+}
+function activeCount(rows,N){ return rows.filter(r => r.start < N && r.end >= N).length; }
+function completedCount(rows,T){ return rows.filter(r => r.end <= T).length; }
+function peakCount(rows){
+  const maxEnd = Math.max(...rows.map(r=>r.end)); let best = 0, bestN = 1;
+  for(let n=1;n<=maxEnd;n++){ const c = activeCount(rows,n); if(c>best){ best=c; bestN=n; } }
+  return {best,bestN};
+}
+function streakAtLeast(rows,K){
+  const maxEnd = Math.max(...rows.map(r=>r.end)); let cur=0,best=0,from=0,bestFrom=0,bestTo=0;
+  for(let n=1;n<=maxEnd;n++){
+    if(activeCount(rows,n) >= K){ if(cur===0) from=n; cur++; if(cur>best){ best=cur; bestFrom=from; bestTo=n; } }
+    else cur=0;
+  }
+  return {best,bestFrom,bestTo};
+}
+function makeGeneratedBySubtype(subtype){
+  if(subtype === 'min') return genMinTime();
+  if(subtype === 'delay') return genDelay();
+  if(subtype === 'active') return genActive();
+  if(subtype === 'completed') return genCompleted();
+  if(subtype === 'peak') return genPeak();
+  if(subtype === 'streak') return genStreak();
+  if(subtype === 't') return genT();
+  return genMinTime();
+}
+function generateRandomExam(){
+  return [genMinTime(), genDelay(), genActive(), genCompleted(), genPeak(), genStreak(), genT()];
+}
+function genMinTime(){
+  const ps = genProcesses(randInt(7,10),3); const sch = compute(ps);
+  return {kind:'generated', subtype:'min', prompt:'Найдите минимальное время, через которое завершится выполнение всей совокупности процессов.', ps, schedule:sch, answer:String(sch.maxEnd)};
+}
+function genDelay(){
+  const ps = genProcesses(randInt(6,9),3); const delay = randInt(2,7); const sch = compute(ps,{delay});
+  return {kind:'generated', subtype:'delay', prompt:`Процесс может начаться не раньше, чем через ${delay} мс после завершения всех процессов, от которых он зависит. Найдите минимальное время завершения всей совокупности процессов.`, ps, schedule:sch, delay, answer:String(sch.maxEnd)};
+}
+function genActive(){
+  let ps,sch,N,ans,tries=0;
+  do{ ps = genProcesses(randInt(8,11),3); sch = compute(ps); N = randInt(3, Math.max(4, sch.maxEnd-1)); ans = activeCount(sch.rows,N); tries++; } while((ans<2 || ans>7) && tries<40);
+  return {kind:'generated', subtype:'active', prompt:`Сколько процессов выполняется в течение ${N}-й миллисекунды?`, ps, schedule:sch, N, answer:String(ans)};
+}
+function genCompleted(){
+  let ps,sch,T,ans,tries=0;
+  do{ ps = genProcesses(randInt(8,11),3); sch = compute(ps); T = randInt(4, Math.max(5, sch.maxEnd-1)); ans = completedCount(sch.rows,T); tries++; } while((ans<2 || ans>=ps.length) && tries<40);
+  return {kind:'generated', subtype:'completed', prompt:`Сколько процессов завершится за первые ${T} мс?`, ps, schedule:sch, T, answer:String(ans)};
+}
+function genPeak(){
+  const ps = genProcesses(randInt(9,12),3); const sch = compute(ps); const pk = peakCount(sch.rows);
+  return {kind:'generated', subtype:'peak', prompt:'Найдите максимальное количество процессов, которые выполняются одновременно хотя бы в течение одной миллисекунды.', ps, schedule:sch, peakN:pk.bestN, answer:String(pk.best)};
+}
+function genStreak(){
+  let ps,sch,pk,K,st,tries=0;
+  do{ ps = genProcesses(randInt(9,12),3); sch = compute(ps); pk = peakCount(sch.rows); K = Math.max(2, Math.min(pk.best, randInt(2,4))); st = streakAtLeast(sch.rows,K); tries++; } while(st.best < 1 && tries<40);
+  return {kind:'generated', subtype:'streak', prompt:`Найдите максимальную продолжительность отрезка времени, в течение которого одновременно выполнялось не менее ${K} процессов.`, ps, schedule:sch, K, answer:String(st.best), streakInfo:st};
+}
+function genT(){
+  const ps = genProcesses(randInt(7,10),3);
+  const tId = randInt(2, ps.length-1);
+  ps[tId-1].dur = 't';
+  const limitSeed = randInt(8,18);
+  const limit = compute(ps,{tId,tVal:limitSeed}).maxEnd;
+  let best = 0;
+  for(let t=1;t<=80;t++){
+    if(compute(ps,{tId,tVal:t}).maxEnd <= limit) best = t;
+    else if(t > best + 20) break;
+  }
+  const sch = compute(ps,{tId,tVal:best});
+  return {kind:'generated', subtype:'t', prompt:`В таблице длительность процесса ${tId} обозначена буквой t. Известно, что вся совокупность процессов завершилась не более чем за ${limit} мс. Найдите максимально возможное целое значение t.`, ps, schedule:sch, tId, limit, answer:String(best)};
+}
+function renderGenerated(q){
+  let note = '<div class="exam-box"><b>Таблица процессов:</b> зависимости указаны через точку с запятой. Если зависимость 0, процесс независимый.</div>';
+  if(q.subtype === 'delay') note += `<div class="theory">Не забудь: задержка ${q.delay} мс добавляется только зависимым процессам.</div>`;
+  if(q.subtype === 't') note += `<div class="theory">Для t-задачи ищется максимум. После найденного значения мысленно проверь t+1: оно уже должно нарушать лимит.</div>`;
+  return note + tableHtml(q.ps);
+}
+function generatedSolution(q){
+  if(q.kind !== 'generated') return q.explain || '';
+  let s = '';
+  if(q.subtype === 'min') s = `Считаем Start и End для каждой строки. Ответ — максимум End = <b>${q.answer}</b>.`;
+  if(q.subtype === 'delay') s = `Для зависимых Start = max(End предков) + ${q.delay}. Ответ — максимум End = <b>${q.answer}</b>.`;
+  if(q.subtype === 'active') s = `${q.N}-я миллисекунда — это отрезок ${q.N-1}–${q.N}. Нужны строки, где Start &lt; ${q.N} и End ≥ ${q.N}. Их <b>${q.answer}</b>.`;
+  if(q.subtype === 'completed') s = `За первые ${q.T} мс завершились процессы, у которых End ≤ ${q.T}. Их <b>${q.answer}</b>.`;
+  if(q.subtype === 'peak') s = `Считаем активные процессы по каждой миллисекунде. Максимум равен <b>${q.answer}</b>; один из моментов — ${q.peakN}-я мс.`;
+  if(q.subtype === 'streak') s = `Считаем активные процессы по каждой миллисекунде и ищем самую длинную непрерывную серию, где их не менее ${q.K}. Длина = <b>${q.answer}</b> мс.`;
+  if(q.subtype === 't') s = `При t = ${q.answer} максимум End не превышает ${q.limit}. При t = ${Number(q.answer)+1} лимит уже нарушается, значит максимум t = <b>${q.answer}</b>.`;
+  return s + tableHtml(q.ps, q.schedule);
+}
+function confetti(){
+  const box = $('#confetti'); box.innerHTML = '';
+  for(let i=0;i<34;i++){
+    const p = document.createElement('i');
+    p.style.left = randInt(3,97) + 'vw'; p.style.animationDelay = randInt(0,260) + 'ms'; p.style.transform = `rotate(${randInt(0,180)}deg)`;
+    box.appendChild(p);
+  }
+  setTimeout(()=>box.innerHTML='',1300);
+}
+
+updateStats(); renderLessons(); renderLessonOverview();
+</script>
+</body>
+</html>
