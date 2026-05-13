@@ -1,37 +1,396 @@
-<div class="cards">
-  <div class="card">
-    <div class="card-number">22</div>
-    <h3>Теория</h3>
-    <p>
-      Основные правила, объяснения и примеры по заданию 22.
-    </p>
-    <a href="ege/informatika/22/theory.html">Открыть теорию →</a>
-  </div>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ЕГЭ Информатика</title>
 
-  <div class="card">
-    <div class="card-number">22</div>
-    <h3>Тренировочка</h3>
-    <p>
-      Задания для практики, чтобы закрепить тему.
-    </p>
-    <a href="ege/informatika/22/practice.html">Открыть задания →</a>
-  </div>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  <div class="card">
-    <div class="card-number">15.2</div>
-    <h3>Теория</h3>
-    <p>
-      Теория по заданию 15.2: логика, выражения, условия и разбор подхода.
-    </p>
-    <a href="ege/informatika/15/2/theory.html">Открыть теорию →</a>
-  </div>
+    html {
+      scroll-behavior: smooth;
+    }
 
-  <div class="card">
-    <div class="card-number">15.2</div>
-    <h3>Тренировочка</h3>
-    <p>
-      Практические задания по 15.2 для закрепления темы.
-    </p>
-    <a href="ege/informatika/15/2/practice.html">Открыть задания →</a>
-  </div>
-</div>
+    body {
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(0, 255, 153, 0.18), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(0, 140, 255, 0.18), transparent 35%),
+        #0d1117;
+      color: #ffffff;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 22px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(13, 17, 23, 0.85);
+      backdrop-filter: blur(12px);
+    }
+
+    .header-inner {
+      max-width: 1150px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      color: #00ff99;
+      letter-spacing: 0.3px;
+    }
+
+    nav {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    nav a {
+      color: #c9d1d9;
+      text-decoration: none;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+
+    nav a:hover {
+      color: #00ff99;
+    }
+
+    main {
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 70px 20px 50px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 70px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 16px;
+      margin-bottom: 22px;
+      border: 1px solid rgba(0, 255, 153, 0.45);
+      border-radius: 999px;
+      color: #00ff99;
+      background: rgba(0, 255, 153, 0.08);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    h1 {
+      max-width: 900px;
+      margin: 0 auto 22px;
+      font-size: clamp(38px, 7vw, 72px);
+      line-height: 1.05;
+      letter-spacing: -1px;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin: 0 auto 34px;
+      color: #c9d1d9;
+      font-size: 20px;
+      line-height: 1.6;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 24px;
+      border-radius: 14px;
+      background: #00ff99;
+      color: #0d1117;
+      font-weight: 800;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 255, 153, 0.25);
+    }
+
+    .btn.secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .btn.secondary:hover {
+      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.08);
+      border-color: rgba(0, 255, 153, 0.45);
+    }
+
+    .section {
+      margin-bottom: 70px;
+    }
+
+    .section-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 20px;
+      margin-bottom: 26px;
+    }
+
+    .section-title {
+      font-size: 34px;
+      line-height: 1.2;
+    }
+
+    .section-subtitle {
+      color: #8b949e;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 22px;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      min-height: 250px;
+      padding: 26px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: 0.2s;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(0, 255, 153, 0.12), transparent 35%);
+      opacity: 0;
+      transition: 0.2s;
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(0, 255, 153, 0.5);
+      background: rgba(255, 255, 255, 0.09);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-number {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      background: rgba(0, 255, 153, 0.12);
+      color: #00ff99;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 21px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(0, 255, 153, 0.2);
+    }
+
+    .card h3 {
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    .card p {
+      color: #c9d1d9;
+      line-height: 1.55;
+      margin-bottom: 24px;
+    }
+
+    .card a {
+      position: relative;
+      color: #00ff99;
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .card a:hover {
+      text-decoration: underline;
+    }
+
+    .info {
+      padding: 28px;
+      border-radius: 24px;
+      background: rgba(0, 140, 255, 0.08);
+      border: 1px solid rgba(0, 140, 255, 0.22);
+    }
+
+    .info h2 {
+      margin-bottom: 14px;
+      font-size: 28px;
+    }
+
+    .info p {
+      color: #c9d1d9;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    footer {
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 30px 20px;
+      color: #8b949e;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+    }
+
+    @media (max-width: 700px) {
+      .header-inner {
+        flex-direction: column;
+      }
+
+      main {
+        padding-top: 45px;
+      }
+
+      .hero {
+        margin-bottom: 50px;
+      }
+
+      .section-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .hero p {
+        font-size: 18px;
+      }
+
+      .card {
+        min-height: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="logo">ЕГЭ Информатика</div>
+
+      <nav>
+        <a href="#tasks">Разделы</a>
+        <a href="ege/informatika/22/theory.html">22 теория</a>
+        <a href="ege/informatika/22/practice.html">22 практика</a>
+        <a href="ege/informatika/15/2/theory.html">15.2 теория</a>
+        <a href="ege/informatika/15/2/practice.html">15.2 практика</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="badge">Подготовка к ЕГЭ по информатике</div>
+
+      <h1>Информатика без паники</h1>
+
+      <p>
+        Здесь собраны теория и тренировочные задания.
+        Сейчас доступны разделы 22 и 15.2.
+      </p>
+
+      <div class="buttons">
+        <a class="btn" href="#tasks">Выбрать раздел</a>
+        <a class="btn secondary" href="ege/informatika/22/theory.html">Начать с 22</a>
+      </div>
+    </section>
+
+    <section class="section" id="tasks">
+      <div class="section-top">
+        <div>
+          <h2 class="section-title">Разделы</h2>
+          <p class="section-subtitle">Выбери тему: теория или тренировочные задания.</p>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <div class="card-number">22</div>
+          <h3>Теория</h3>
+          <p>
+            Основные правила, объяснения и примеры по заданию 22.
+          </p>
+          <a href="ege/informatika/22/theory.html">Открыть теорию →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-number">22</div>
+          <h3>Тренировочка</h3>
+          <p>
+            Практические задания по номеру 22 для закрепления темы.
+          </p>
+          <a href="ege/informatika/22/practice.html">Открыть задания →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-number">15.2</div>
+          <h3>Теория</h3>
+          <p>
+            Теория по заданию 15.2: логика, выражения, условия и подход к решению.
+          </p>
+          <a href="ege/informatika/15/2/theory.html">Открыть теорию →</a>
+        </div>
+
+        <div class="card">
+          <div class="card-number">15.2</div>
+          <h3>Тренировочка</h3>
+          <p>
+            Практика по заданию 15.2, чтобы нормально набить руку.
+          </p>
+          <a href="ege/informatika/15\2/practice.html">Открыть задания →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="info">
+        <h2>Как пользоваться</h2>
+        <p>
+          Сначала открой теорию по нужному заданию, потом переходи к тренировке.
+        </p>
+        <p>
+          Если какая-то ссылка не открывается, проверь путь к файлу в репозитории.
+          Для 15.2 путь должен быть: <strong>ege/informatika/15\2/</strong>.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Сделано для подготовки к ЕГЭ по информатике
+  </footer>
+</body>
+</html>
